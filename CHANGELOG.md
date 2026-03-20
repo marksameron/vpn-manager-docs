@@ -4,6 +4,13 @@ All notable changes to VPN Manager are documented here.
 
 ---
 
+## v1.2.37 — 2026-03-20
+
+### Fixed
+- Missing i18n translation keys for navigation, dashboard charts, server bandwidth, and settings across all 5 locales (EN/RU/DE/ES/FR)
+
+---
+
 ## v1.2.36 — 2026-03-20
 
 ### Added
