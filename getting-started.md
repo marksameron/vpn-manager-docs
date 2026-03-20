@@ -87,12 +87,26 @@ Download the `.conf` file or scan the QR code with the WireGuard mobile app.
 
 By default both panels are accessible by IP and port. To bind them to domains with HTTPS:
 
-**During installation** — the installer will ask interactively. To set up in advance:
+**During installation** — the installer asks interactively and offers two options:
+
+- **Option 1:** Client portal on its own domain (Let's Encrypt) + admin panel via IP with self-signed TLS
+- **Option 2:** Both panels on separate domains with Let's Encrypt certificates
+
+Just answer the prompts — the installer handles nginx config and certificate issuance automatically.
+
+To pre-configure for non-interactive installs:
 
 ```bash
-export SB_WEB_SETUP_MODE=portal_admin_domain
-export SB_ADMIN_PANEL_DOMAIN=admin.yourdomain.com
+# Option 1: portal on domain, admin by IP
+export SB_WEB_SETUP_MODE=portal_admin_ip
 export SB_CLIENT_PORTAL_DOMAIN=portal.yourdomain.com
+export SB_CERTBOT_EMAIL=your@email.com
+sudo -E bash install.sh --non-interactive
+
+# Option 2: both on domains
+export SB_WEB_SETUP_MODE=portal_admin_domain
+export SB_CLIENT_PORTAL_DOMAIN=portal.yourdomain.com
+export SB_ADMIN_PANEL_DOMAIN=admin.yourdomain.com
 export SB_CERTBOT_EMAIL=your@email.com
 sudo -E bash install.sh --non-interactive
 ```
