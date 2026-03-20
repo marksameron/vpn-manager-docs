@@ -63,17 +63,60 @@ http://YOUR_SERVER_IP:10086
 
 Create your admin account on first visit.
 
-**3. Activate your license:**
+**3. Open the client portal** (your end-users access this):
+
+```
+http://YOUR_SERVER_IP:10090
+```
+
+**4. Activate your license:**
 
 Go to **Settings → License**, paste your activation code, click **Activate**.
 
 Trial mode allows 10 clients on 1 server for 7 days.
 
-**4. Add your first client:**
+**5. Add your first client:**
 
 Go to **Clients → Add Client**, enter a name, select the server, click **Create**.
 
 Download the `.conf` file or scan the QR code with the WireGuard mobile app.
+
+---
+
+## Setting Up Domains (Recommended)
+
+By default both panels are accessible by IP and port. To bind them to domains with HTTPS:
+
+**During installation** — the installer will ask interactively. To set up in advance:
+
+```bash
+export SB_WEB_SETUP_MODE=portal_admin_domain
+export SB_ADMIN_PANEL_DOMAIN=admin.yourdomain.com
+export SB_CLIENT_PORTAL_DOMAIN=portal.yourdomain.com
+export SB_CERTBOT_EMAIL=your@email.com
+sudo -E bash install.sh --non-interactive
+```
+
+**After installation** — via the admin panel:
+
+Go to **Settings → Web Access** → enter your domains → click **Apply**. SSL certificates are issued automatically via Let's Encrypt.
+
+Or via command line:
+
+```bash
+cd /opt/vpnmanager
+sudo bash scripts/configure-web-access.sh \
+  --mode portal_admin_domain \
+  --admin-domain admin.yourdomain.com \
+  --portal-domain portal.yourdomain.com \
+  --email your@email.com
+```
+
+> **Requirements:** DNS A-records for both domains must already point to your server IP. Ports 80 and 443 must be open.
+
+After setup:
+- Admin panel → `https://admin.yourdomain.com`
+- Client portal → `https://portal.yourdomain.com`
 
 ---
 

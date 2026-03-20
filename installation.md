@@ -130,6 +130,12 @@ http://YOUR_SERVER_IP:10086
 
 On first visit, create your administrator account. Use a strong password (minimum 8 characters).
 
+The **client portal** (for your end-users) is available at:
+
+```
+http://YOUR_SERVER_IP:10090
+```
+
 ### 2. Activate Your License
 
 1. Open **Settings** in the sidebar
