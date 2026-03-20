@@ -42,7 +42,6 @@ All notable changes to VPN Manager are documented here.
 - Online license validator with heartbeat
 - Client portal: user self-registration, subscription plans, crypto payments
 - Telegram client bot for end-user self-service
-- Android app with WireGuard client (source code included in Enterprise)
 
 ---
 

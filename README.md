@@ -1,6 +1,6 @@
 # VPN Manager — Documentation
 
-Self-hosted WireGuard VPN management platform. Admin panel, client portal, Telegram bots, Android app.
+Self-hosted WireGuard VPN management platform. Admin panel, client portal, Telegram bots.
 
 ---
 
