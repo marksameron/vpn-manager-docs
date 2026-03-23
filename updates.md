@@ -20,8 +20,8 @@ All update packages are signed with an RSA-PSS key. The corresponding public key
 
 | Channel | Description |
 |---------|-------------|
-| `stable` | Production releases, fully tested |
-| `test` | Release candidates, preview features |
+| `stable` | Production releases, fully tested and promoted from `test` |
+| `test` | Release candidates — all new builds go here first |
 
 The active channel is shown on the **Updates** page. Switch channels in **Settings → Update Channel** or via the API:
 
@@ -29,6 +29,42 @@ The active channel is shown on the **Updates** page. Switch channels in **Settin
 POST /api/v1/updates/channel
 {"channel": "stable"}
 ```
+
+---
+
+## Release Workflow
+
+All new versions follow a **test → stable** promotion cycle:
+
+```
+build_release.sh
+       ↓
+  publish to TEST channel
+       ↓
+  apply update on test stand, verify everything works
+       ↓
+  promote to STABLE channel  ←  clients on stable receive the update
+```
+
+### Step by step (developer)
+
+1. Make code changes and commit
+2. Bump version in `VERSION` file
+3. Run `bash build_release.sh`
+4. Publish to **test** channel via the license server admin panel (`/panel/updates`)
+5. On your test server, switch to `test` channel and apply the update via admin panel
+6. Run through the test checklist (see below)
+7. If all checks pass, promote to stable via the license server admin panel
+
+### Test Checklist
+
+- [ ] Admin panel loads, login works
+- [ ] Client portal loads
+- [ ] WireGuard peers listed correctly
+- [ ] Agent install works on a test server
+- [ ] Client bot responds to /start
+- [ ] Payment flow (if payment-related changes)
+- [ ] Smoke check passes (green in Updates → History)
 
 ---
 
