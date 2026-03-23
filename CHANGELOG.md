@@ -4,6 +4,13 @@ All notable changes to VPN Manager are documented here.
 
 ---
 
+## v1.2.46 — 2026-03-24
+
+### Fixed
+- White screen when clicking WebAccess radio buttons in Settings — caused by unescaped `@` symbols in vue-i18n locale strings (`admin@example.com`, `@CryptoTestnetBot`) triggering "Invalid linked format" compile error at runtime
+
+---
+
 ## v1.2.37 — 2026-03-20
 
 ### Fixed
