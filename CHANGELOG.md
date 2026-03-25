@@ -4,6 +4,43 @@ All notable changes to VPN Manager are documented here.
 
 ---
 
+## v1.2.72 — 2026-03-26
+
+### Added
+- Business invariant validator: 7 automated checks run every 30 minutes — detects expired clients with active access, completed payments without subscriptions, proxy clients with fake bandwidth limits, and more; auto-fixes violations
+- Self-healing state reconciler: ghost peer detection — if a client is disabled in DB but the WireGuard peer still exists on the server, it is automatically removed (access leak prevention)
+- Payment pipeline tracing: every payment now has a `trace_id` and a `pipeline_log` recording each step (create → webhook → activate → sync_wg); inconsistent payments are flagged for admin review
+- Fail-safe mode: when the system detects critical conditions (invalid license, all WG servers unreachable), new payments are blocked with a clear error message instead of creating broken state
+- Worker heartbeat: background worker writes a heartbeat to DB every cycle; health endpoint detects stale/dead worker
+- `GET /api/v1/health/full` — comprehensive real-state health check: database, WG servers, license, worker, business invariants → returns OK / DEGRADED / FAIL with problem list
+- `GET /api/v1/system/metrics` — operational counters: active clients, expired+enabled (critical flag), payment stats, subscription counts, server drift count
+- `GET/POST /api/v1/system/failsafe` — view and manually control fail-safe mode
+- Daily health report at 08:00 UTC via Telegram admin notification
+
+### Fixed
+- Silent failures in payment and subscription pipeline replaced with structured logging (trace_id, user_id, step name)
+- `state_reconciler`: previously only re-added missing peers; now also removes peers that are disabled in DB but still live on the WireGuard interface
+
+### Changed
+- `client_portal_payments` table: added `trace_id`, `pipeline_log`, `pipeline_status` columns (migration 016)
+
+---
+
+## v1.2.71 — 2026-03-25
+
+### Fixed
+- Proxy clients: traffic and bandwidth columns in Clients table now show `—` instead of fake values
+- TC bandwidth limits now enforced immediately after subscription change (not only at next worker cycle)
+- `_sync_wg_after_payment` fallback when admin API is not configured — now applies limits directly via DB
+- `check_expired_clients`: added SELECT FOR UPDATE (skip locked) to prevent duplicate processing under concurrent worker runs
+- Client disabling: DB always updated even if WireGuard peer removal fails
+- Duplicate pending payments: old pending payments for the same user/tier are cancelled before creating a new one
+- Thread-safe traffic cache reads and writes via `_TRAFFIC_CACHE_LOCK`
+- Per-client try/except in `_disable_user_clients` — one failed client no longer blocks the rest
+- `is_proxy_client` criterion strengthened: based solely on `public_key is None`
+
+---
+
 ## v1.2.46 — 2026-03-24
 
 ### Fixed
