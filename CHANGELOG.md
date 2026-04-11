@@ -4,6 +4,47 @@ All notable changes to VPN Manager are documented here.
 
 ---
 
+## v1.4.42 — 2026-04-12
+
+### Added
+- **Server display names** — admins can rename servers so clients see friendly names instead of real IPs in the client portal
+- **Sortable columns** in Clients table — click any header (name, server, IP, status, traffic, bandwidth, expiry) to sort asc/desc with arrow indicator
+- **System Health mode indicator** — banner shows "7/7 OK (Quick)" vs "10/10 OK (Full)" with clickable hint to switch modes
+- **Concurrent instance detection** — real-time clone detection within 10-minute window (no IP requirement — catches clones behind same NAT)
+- **Clone rejection at validation** — `/api/validate` blocks concurrent instances immediately instead of waiting 7 days
+- **Hardware fingerprint hardening** — added DMI UUID, disk serial, RAM size to hardware binding (7 entropy sources total)
+- `INTERNAL_LICENSE_MODE` now requires `.dev-mode` marker file (not just env var)
+- `install.sh`: license server URL configurable via `SB_LICENSE_SERVER_URL` env var
+- `install.sh`: improved network interface detection with multiple fallback methods
+
+### Fixed
+- **Backup page white screen** — `$t()` used in `<script setup>` without `useI18n()` import, causing ReferenceError crash
+- **Settings page crash** — missing i18n keys (`systemTools`, `limitCheck`, etc.) caused partial render failure
+- **Proxy client creation failure** — `CreateClientResponse.ipv4` was non-Optional, proxy clients with `ipv4=None` crashed Pydantic validation
+- **Proxy config rollback** — `_apply_proxy_config()` result was silently ignored; client saved to DB even when SSH config application failed
+- **Unicode crash on QR/config download** — Cyrillic client names caused `UnicodeEncodeError` in Content-Disposition headers
+- **Hysteria2/TUIC configs use domain** — client configs now use domain as connection host when TLS cert exists (not IP), fixing TLS handshake failures
+- **License server `/panel/api/sales`** — `NameError: PRICES` undefined variable fixed
+- **`portalUsers.never`** i18n key added — was showing raw key string instead of "Никогда"
+- `datetime.utcnow()` deprecated calls replaced with `datetime.now(timezone.utc)`
+- Rate limit cleanup threshold lowered from 10000 to 1000 IPs
+- Bare `except Exception` narrowed to specific types in `_deserialize_permissions()`
+- Cross-worker proxy config lock via `pg_advisory_xact_lock`
+
+### Changed
+- **Client Portal Dashboard** — UI polish: hero KPI card, subscription details in 2 groups, device list restructured, referral inline copy, mobile responsive
+- **Server Monitoring** — complete visual overhaul: 3-level hierarchy (name+status → message → metrics), prominent colored status badges, metrics in CSS grid, actions as fixed-size buttons
+- **System Health** — compact banner, quiet status badges when healthy, metrics as plain text (not pills), progress bars thicker (6px)
+- **Portal Users table** — zebra rows, username/email hierarchy, tier color badges, filters unified bar with search icon, "Never" for empty last login
+- **Subscriptions table** — tier color badges (not red `<code>`), ∞→"Unlim." text, delete button hidden until hover, modal restructured into 5 grouped sections
+- **Settings page** — 12 new i18n keys, ~25 hardcoded strings replaced with `$t()`, branding section fully localized
+- **Admin panel** — complete i18n for Settings, missing keys added to all 5 locales (en/ru/de/es/fr)
+- Removed 109 unnecessary `|| 'fallback'` i18n patterns from client portal
+- Removed "spongebot" from client-facing error messages
+- License server web panel: dynamic tier filters, license count indicator
+
+---
+
 ## v1.4.11 — 2026-04-07
 
 ### Added
