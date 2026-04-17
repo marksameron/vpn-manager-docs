@@ -4,6 +4,32 @@ All notable changes to VPN Manager are documented here.
 
 ---
 
+## v1.4.43 — 2026-04-17
+
+### Added
+- **NOWPayments purchase flow** — full end-to-end payment pipeline: invoice creation, IPN webhook processing, activation code generation, signed download token delivery
+- **Post-payment thank-you modal** on landing — auto-detects `?NP_id=` redirect from NOWPayments, polls purchase API, displays activation code (with copy button) and one-time download link
+- **Email collection in payment modal** — buyer enters email before redirect to NOWPayments; email stored server-side and resolved by webhook when IPN arrives (no dependency on NOWPayments email collection)
+- **Buyer email delivery** — HTML email with activation code, green "Download" button (signed URL, 72h TTL, 5 download attempts), and step-by-step install instructions
+- **Vendor sale notification** — always fires on successful payment (independent of buyer email), includes plan, amount, code, NOWPayments ID, and download URL
+- **Download token system** — `download_tokens` DB table with signed URL-safe tokens, expiry, use limit, IP tracking; `GET /download/{token}` serves package with counter enforcement
+- **Invoice creation proxy** — `POST /api/create-invoice` creates NOWPayments invoice server-side with canonical pricing (prevents client-side price tampering), stores buyer email in `buyer_emails.json`
+- **Auto-cleanup of unpaid buyer emails** — entries without payment are automatically purged after 7 days; paid entries marked `paid: true` and kept permanently
+- **Multi-currency payment support** — landing page payment modal with 11+ cryptocurrency options (BTC, ETH, USDT-TRC20/ERC20, USDC, LTC, XMR, TON, SOL, BNB, TRX)
+- Landing: 6 languages for all new payment/thank-you UI strings (EN, RU, UK, DE, FR, ES)
+
+### Fixed
+- **QR code crash on Cyrillic client names** — `_safe_filename()` used `\w` which matches Unicode; replaced with explicit `[a-zA-Z0-9_\-.]` to ensure ASCII-only Content-Disposition headers
+- **Vendor notification not firing** — was nested inside `_send_license_email()` which was skipped when buyer email was empty; split into independent `_send_vendor_notification()`
+
+### Changed
+- Landing: pricing buttons changed from direct NOWPayments links to dynamic invoice creation via server-side proxy
+- Landing: payment modal now collects email, shows loading spinner during invoice creation, validates email format client-side
+- License server: refactored SMTP into reusable `_send_mail()` helper; vendor and buyer emails use separate functions
+- License server: migrated to pupsik (107.172.39.137 / flirexa.biz) as primary host
+
+---
+
 ## v1.4.42 — 2026-04-12
 
 ### Added
