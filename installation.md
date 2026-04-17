@@ -22,8 +22,8 @@ The installer requires internet access to download packages from apt and pip.
 ## Option A: Automated Install (Recommended)
 
 ```bash
-tar xzf vpn-manager-v1.1.0.tar.gz
-cd vpn-manager-v1.1.0
+tar xzf vpn-manager-v1.4.48.tar.gz
+cd vpn-manager-v1.4.48
 sudo bash install.sh
 ```
 
@@ -89,8 +89,8 @@ Default install directory is `/opt/vpnmanager`.
 ## Option B: Docker
 
 ```bash
-tar xzf vpn-manager-v1.1.0.tar.gz
-cd vpn-manager-v1.1.0
+tar xzf vpn-manager-v1.4.48.tar.gz
+cd vpn-manager-v1.4.48
 cp .env.example .env
 ```
 

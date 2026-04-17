@@ -50,8 +50,8 @@ When you add a server, you select the type: `wireguard` or `amneziawg`. All subs
 **1. Install on a fresh server:**
 
 ```bash
-tar xzf vpn-manager-v1.1.0.tar.gz
-cd vpn-manager-v1.1.0
+tar xzf vpn-manager-v1.4.48.tar.gz
+cd vpn-manager-v1.4.48
 sudo bash install.sh
 ```
 
