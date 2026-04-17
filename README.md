@@ -24,8 +24,8 @@ Self-hosted WireGuard VPN management platform. Admin panel, client portal, Teleg
 ## Quick Start
 
 ```bash
-tar xzf vpn-manager-v1.2.36.tar.gz
-cd vpn-manager-v1.2.36
+tar xzf vpn-manager-v1.4.48.tar.gz
+cd vpn-manager-v1.4.48
 sudo bash install.sh
 ```
 
@@ -35,4 +35,4 @@ Open `http://YOUR_SERVER_IP:10086` after install.
 
 ## Support
 
-Contact: [mazarata.kirara@gmail.com](mailto:mazarata.kirara@gmail.com)
+Contact: [support@flirexa.biz](mailto:support@flirexa.biz)
