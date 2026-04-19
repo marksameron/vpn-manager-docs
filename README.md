@@ -149,6 +149,7 @@ Open `http://YOUR_SERVER_IP:10086` after install.
 | [Pricing & Plans](pricing.md) | Tier comparison, features, payment info |
 | [Licensing](licensing.md) | Activation, hardware binding, transfers |
 | [Adding Servers](add-server.md) | Connect remote servers via SSH |
+| [Payment Setup](payment-setup.md) | CryptoPay, PayPal, NOWPayments configuration |
 | [Client Management](client-management.md) | Creating clients, QR codes, traffic limits |
 | [CLI Reference](cli-reference.md) | `vpnmanager` commands and usage |
 | [Backup & Restore](backup-restore.md) | Scheduled backups, restore procedure |
