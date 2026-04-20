@@ -121,12 +121,20 @@ One-time purchase. No recurring fees. Updates included while product is maintain
 ## Quick Start
 
 ```bash
-tar xzf vpn-manager-v1.4.48.tar.gz
-cd vpn-manager-v1.4.48
-sudo bash install.sh
+curl -fsSL https://flirexa.biz/install.sh | sudo bash
 ```
 
-Open `http://YOUR_SERVER_IP:10086` after install.
+One command — downloads the latest version, checks your system, and installs everything. Open `http://YOUR_SERVER_IP:10086` after install.
+
+<details>
+<summary>Manual install (alternative)</summary>
+
+```bash
+tar xzf vpn-manager-v1.4.54.tar.gz
+cd vpn-manager-v1.4.54
+sudo bash install.sh
+```
+</details>
 
 ### System Requirements
 
