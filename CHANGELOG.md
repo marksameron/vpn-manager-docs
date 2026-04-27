@@ -4,6 +4,20 @@ All notable changes to VPN Manager are documented here.
 
 ---
 
+## v1.4.60 — 2026-04-27
+
+### Added
+- **Donate button + reminder modal in admin panel** — heart-icon button always visible in topbar; opens a modal with a "Support on GitHub" CTA linking to the project's crypto donation addresses (BTC / ETH / USDT TRC-20 / USDT ERC-20). The modal auto-shows on first install, then re-shows only after a 7-day cooldown after the user dismisses it. The free tier stays free; donations fund the work, they do not unlock features. Localised across EN / RU / DE / FR / ES.
+
+### Changed
+- **Starter tier client cap 500 → 300** in the offline LICENSE_TIERS fallback. Aligns with the new pricing copy on flirexa.biz. Existing customers are unaffected — the cap they get is whatever was in their signed payload, refreshed via /api/validate.
+
+### Notes
+- v1.4.59 was published to the test channel, then superseded by v1.4.60 (same changes, plus a contrast fix for the donate modal text). Only v1.4.60 reached stable.
+
+---
+
+
 ## v1.4.43 — 2026-04-17
 
 ### Added
@@ -26,7 +40,7 @@ All notable changes to VPN Manager are documented here.
 - Landing: pricing buttons changed from direct NOWPayments links to dynamic invoice creation via server-side proxy
 - Landing: payment modal now collects email, shows loading spinner during invoice creation, validates email format client-side
 - License server: refactored SMTP into reusable `_send_mail()` helper; vendor and buyer emails use separate functions
-- License server: migrated to pupsik (107.172.39.137 / flirexa.biz) as primary host
+- License server: migrated to flirexa.biz as primary host
 
 ---
 
