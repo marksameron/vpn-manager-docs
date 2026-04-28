@@ -4,6 +4,17 @@ All notable changes to VPN Manager are documented here.
 
 ---
 
+## v1.4.64 — 2026-04-29
+
+### Fixed
+
+- **AmneziaWG was incorrectly gated as a paid feature.** The server-create endpoint mapped `amneziawg` → license-feature `amneziawg`, which doesn't exist on FREE-tier signed licenses, so any FREE user trying to provision an AmneziaWG server got `403 "AMNEZIAWG protocol requires the 'amneziawg' feature. Upgrade your plan to enable it."` This contradicts both the README and `docs/free-vs-paid.md`, which list AmneziaWG as a core FREE feature — it's the DPI-resistant protocol that makes the product useful on hostile networks.
+  - Real impact for FREE users: a fresh install auto-provisions a WireGuard server. Anyone who wanted AmneziaWG instead had to delete the auto-server and create a new one — and the second create was blocked. They were stuck on WireGuard. Now AmneziaWG creation just works.
+  - Hysteria2 / TUIC still require the `proxy_protocols` feature (Starter+), unchanged.
+- **License-server plans seed**: added `amneziawg` to the standard / pro plan feature lists too, so future-issued paid licenses also include it (was previously absent — paid users were *also* affected, just less visibly because they could pay their way to enterprise which already had it).
+
+---
+
 ## v1.4.63 — 2026-04-28
 
 ### Security / Fixed
