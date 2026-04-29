@@ -4,6 +4,23 @@ All notable changes to VPN Manager are documented here.
 
 ---
 
+## v1.4.70 — 2026-04-29
+
+### Fixed
+
+- **AmneziaWG server wouldn't start ("Failed to start server" / 500)** — four stacked issues, all hit on a fresh FREE install once you actually try to bring an AmneziaWG interface up alongside the auto-provisioned WireGuard:
+  1. **Wrong config path.** apt-installed `awg-quick` from `ppa:amnezia/ppa` looks for the config at `/etc/amnezia/amneziawg/<iface>.conf` (note the extra `amnezia/` segment), not `/etc/amneziawg/<iface>.conf`. The codebase wrote everywhere to the latter so awg-quick reported "config does not exist". Replaced `/etc/amneziawg` → `/etc/amnezia/amneziawg` across `servers.py`, `server_manager.py`, `agent_bootstrap.py`, `backup_manager.py`, and the `AmneziaWGManager` constructor default.
+  2. **Config file was never written.** `start_server()` called `wg.start_interface()` directly without writing the config to disk. WireGuard got away with it because `install.sh` writes `/etc/wireguard/wg0.conf` eagerly, but the user-created AmneziaWG only had a DB record. `start_server()` now calls `save_server_config()` first; cheap, idempotent, and picks up new peers since last start.
+  3. **Parent dir missing.** `write_config_file()` opened the file directly, which fails on a fresh install where `/etc/amnezia/amneziawg/` doesn't exist yet. Added an `os.makedirs(parent, exist_ok=True)` before write.
+  4. **PostUp/PostDown was malformed for dual-stack address.** AmneziaWG's `generate_server_config()` derived the IPv4 subnet by splitting the full address on `/`, but the address comes in as `10.66.66.1/24,fd42:42:42::1/64` (combined IPv4+IPv6). The naive split produced `10.66.66.1/24,fd42:42:42:.0/64`, which both `iptables` and `ip route` rejected, so `awg-quick` rolled back the interface. Now we extract the IPv4 half before parsing.
+  5. **Port collision.** AmneziaWG defaulted to listen_port 51820 — same as the auto-provisioned WireGuard — so the kernel rejected the second bind with `RTNETLINK answers: Address already in use`. Local server creation now scans existing ports and walks up from the requested one until it finds a free slot. The drift is logged.
+
+End-to-end verified on a clean VM: install → activate FREE → keep auto-WireGuard → create AmneziaWG → click Start → `awg show` lists the interface with all obfuscation parameters and traffic flows.
+
+### Earlier 1.4.68 / 1.4.69 commits land in this release together; bumping straight to 1.4.70 since none of the intermediates were promoted to stable individually.
+
+---
+
 ## v1.4.67 — 2026-04-29
 
 ### Fixed
