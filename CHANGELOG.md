@@ -4,6 +4,20 @@ All notable changes to VPN Manager are documented here.
 
 ---
 
+## v1.4.66 — 2026-04-29
+
+### Changed
+
+- **FREE tier server limit is now per-protocol, not total.** Previously the cap was "one server" — with the auto-provisioned WireGuard taking that slot, FREE users couldn't add AmneziaWG without first deleting their working WireGuard. The intent has always been *both* protocols on FREE (DPI-resistance is core value), so the cap moves to "one of each protocol type":
+  - FREE: up to 1 WireGuard + 1 AmneziaWG = 2 servers total.
+  - Starter (`$19/mo`): adds Hysteria2 + TUIC = up to 4 servers (one of each).
+  - Business+ keeps the existing `multi_server` feature, which lifts the cap fully (10 / unlimited).
+- Server-create endpoint now counts servers of the same `server_type` instead of all servers. The pg advisory lock is preserved so concurrent requests can't both win.
+- License-server `plans` table: `standard.max_servers` 1 → 2.
+- Local `LICENSE_TIERS` fallback: `FREE` 1 → 2, `STANDARD` 1 → 4.
+
+---
+
 ## v1.4.65 — 2026-04-29
 
 ### Fixed
