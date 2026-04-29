@@ -4,6 +4,16 @@ All notable changes to VPN Manager are documented here.
 
 ---
 
+## v1.4.65 — 2026-04-29
+
+### Fixed
+
+- **Fresh installs were missing AmneziaWG userspace tools.** 1.4.64 unblocked AmneziaWG creation at the license layer, but `install.sh` only ever installed `wireguard-tools` — so on a fresh VPS, creating an AmneziaWG server failed with a `500 Internal Server Error` (`FileNotFoundError: 'awg'`). Existing installs that had been hand-configured (e.g. the maintainer's own production box) worked fine, which masked the bug for everyone but new users.
+- Installer now adds the `amnezia/ppa` apt repository and installs `amneziawg`, `amneziawg-tools`, and `amneziawg-dkms` (with the running kernel headers) right after the core package step. The whole AmneziaWG block is best-effort — if the DKMS module fails to compile on a stripped VPS image with no headers, the install still completes and the panel still works in WireGuard-only mode, with a clear log warning.
+- Runtime: `core/amneziawg.py` wraps the `awg` subprocess calls; a missing binary now raises a `RuntimeError` carrying the exact apt command to fix it, and the create-server endpoint surfaces that as `400 Bad Request` instead of leaking a generic 500.
+
+---
+
 ## v1.4.64 — 2026-04-29
 
 ### Fixed
