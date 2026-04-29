@@ -4,6 +4,14 @@ All notable changes to VPN Manager are documented here.
 
 ---
 
+## v1.4.67 — 2026-04-29
+
+### Fixed
+
+- **Update + license server URL defaults pointed at `https://example.com`.** Fresh installs that didn't explicitly set `UPDATE_SERVER_URL` / `LICENSE_SERVER_URL` in `.env` got `404 No manifest found for channel 'stable'` on update checks and trial registration silently failed. Default to `https://flirexa.biz` (operators running their own license server still override via `.env`).
+
+---
+
 ## v1.4.66 — 2026-04-29
 
 ### Changed
