@@ -4,6 +4,27 @@ All notable changes to VPN Manager are documented here.
 
 ---
 
+## v1.5.0 — 2026-05-01
+
+A UX milestone bundling everything from 1.4.96 → 1.5.0 stable:
+
+### Added
+
+- **Online / Offline filter for clients.** The status dropdown on the Clients page now has explicit Online and Offline options (handshake within last 3 minutes counts as online). Localized in 5 languages.
+
+### Fixed
+
+- **Update progress no longer shows a brief "✗ Update failed" before "✓ Update completed successfully".** The reconcile pass that runs at API startup used to prematurely flip the in-flight record to FAILED with `Server restarted during update — outcome unknown` if it ran before the detached `update_apply.sh` had time to write its `apply.exitcode`. With a 120-second grace window the record now stays APPLYING during the typical restart, and the panel renders a clean in-progress card all the way to success.
+- **Heartbeat / online-validator / auto-update-check / update-checker logs now actually show up in `journalctl`.** They were running correctly but their startup banners and runtime messages were silently dropped under uvicorn's logging override. Switched these modules to use `loguru` directly. Side benefit: the noisy "Loaded cached license status: ok" line is now DEBUG instead of INFO.
+- **Navbar's "update available" badge refreshes promptly.** Was polling every 30 minutes; now polls every 60 seconds, plus on tab focus, plus on every admin-panel route change. `/updates/status` is server-side cached so the cadence is cheap.
+
+### Changed
+
+- **License server stays dormant on un-activated FREE installs.** No heartbeat, no validation calls, no telemetry whatsoever — the entire license-server interaction surface is opt-in. Activation (via `install.sh` with a code, or Settings → License → Activate / Re-fetch) wakes everything up automatically on the next iteration.
+- **Admin-panel UI polished end-to-end.** The cheap inline emoji icons (💾 🤖 👥 ✓ ✗ 🔍 ⚠️ 🔄 ⭐ 🗑 ✏️ 🔒 🚀 ⚙️ 💎 🌐 …) across Updates, Servers, Clients, Settings, SystemHealth, Backup, Applications, SupportMessages, AppLogs, PortalUsers, Bots, ServerMonitoring, FeatureLockedCard, plus payment-provider cards in Settings — replaced with Material Design Icons rendered as `<i class="mdi mdi-…">` SVG, matching the sidebar style. HTML-entity icons (`&#x267E;`, `&#x23F8;`, `&#x25B6;`, …) cleaned up too.
+
+---
+
 ## v1.4.95 — 2026-05-01
 
 ### Fixed
