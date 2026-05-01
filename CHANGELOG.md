@@ -4,6 +4,70 @@ All notable changes to VPN Manager are documented here.
 
 ---
 
+## v1.4.91 — 2026-05-01
+
+### Added
+
+- **Auto-poll for new versions in the background.** A periodic check (default every 6 hours, controlled by `UPDATE_CHECK_INTERVAL`) refreshes the manifest cache. The admin panel's navbar now shows a small package-up icon with a red dot when a newer version is available — click it to jump to Updates. No auto-apply: you stay in control of when to install.
+- **`publish_update.py --to-both` flag** for vendors operating primary + backup license servers. One command publishes / promotes / lists / deletes across both, surfacing per-server failures at the end without aborting halfway. Defaults: `flirexa.biz` (primary) + `global-connection.site` (backup).
+
+### Fixed
+
+- **VPN interfaces no longer dropped during update.** `update_apply.sh` now snapshots active `wg` and `awg` interfaces before stopping services and restores any that didn't come back up. Previously, manually-started or orphan interfaces (e.g. an `awg-quick@awg1` that was never `systemctl enabled`) could disappear after a service restart cycle. Real customers' connections survive untouched now.
+- **`vpnmanager license status` now reads the right `.env`.** In release-layout installs (`/opt/vpnmanager/releases/<ver>/`) the CLI was looking for `.env` next to the source, but the persistent `.env` lives at the install root one level up. Symptom: CLI reported `not_activated` while the API correctly showed an active enterprise license. CLI now walks up the directory tree to find `.env`.
+
+---
+
+## v1.4.89-1.4.90 — 2026-05-01
+
+### Added
+
+- **"Re-fetch License" button in Settings → License.** Pairs with the activation replay endpoint (1.4.88). If your license key was lost during the original activation (network blip, lost terminal, parsing error) you can now re-enter your activation code from the panel and recover the same key. Hardware-bound — only works from the original install. No support ticket needed.
+- **Translations** for the Re-fetch UI in English, Russian, Spanish, French, German.
+
+---
+
+## v1.4.88 — 2026-05-01
+
+### Added
+
+- **Activation replay endpoint** (`POST /api/activate/replay`) on the license server. Re-issues the original signed license payload (same plan, expiry, hardware binding) with a fresh signature, for the recovery case where `/api/activate` succeeded but the key didn't land in `.env`. Per-code rate limit: 3 attempts per 24 hours. Hardware mismatch returns 403.
+
+### Fixed
+
+- **`install.sh` activation prompt now works under `curl … | bash`.** The headline install command (`curl -fsSL https://flirexa.biz/install.sh | bash`) silently skipped the prompt because bash's stdin was the curl pipe. Paid customers couldn't enter their activation code that way unless they pre-set `SB_ACTIVATION_CODE`. The prompt now reads from `/dev/tty` explicitly. Empty input, `n`, `no`, `free`, or `skip` selects FREE; anything else is treated as an activation code.
+
+---
+
+## v1.4.87 — 2026-04-30
+
+### Fixed
+
+- **`vpnmanager` CLI wrapper finds the venv in release-layout installs.** After resolving the symlink chain to `/opt/vpnmanager/releases/<ver>/vpnmanager`, the wrapper expected `venv/` next to the script, but venv lives at `/opt/vpnmanager/venv` (parallel to `releases/`). Falling back to system `python3` produced `ModuleNotFoundError: No module named 'dotenv'`. The wrapper now walks up from script dir up to 3 levels looking for `venv/bin/python3`.
+
+---
+
+## v1.4.86 — 2026-04-30
+
+### Fixed
+
+- **Bot services stop looping when the token is missing or `*_BOT_ENABLED=false`.** Previously, `vpnmanager-admin-bot` and `vpnmanager-client-bot` would crash-loop several hundred times per hour — admin-bot exited with status=1 on missing token, client-bot exited cleanly but the unit had `Restart=always` so systemd restarted it anyway. The bots now `sys.exit(0)` cleanly on missing/disabled config, and the units use `Restart=on-failure` — no restart cycle, no CPU waste, no journal spam.
+
+---
+
+## v1.4.85 — 2026-04-30
+
+### Added
+
+- **Dual-format QR code for AmneziaWG clients.** The client view now shows two QRs side by side: a plain `.conf` for the AmneziaWG simple app, and a `vpn://` share URL for the AmneziaVPN mobile app. Same peer, different formats — pick whichever matches your client.
+- **Trial vs paid grace period.** Short licenses (≤14 days, e.g. trials) now have no grace period — when they expire, the system goes degraded immediately. Paid licenses keep the standard 72-hour grace window for offline clock skew.
+
+### Fixed
+
+- **License server URL defaults to `https://flirexa.biz`** in fresh builds (was `example.com` placeholder). Operators running self-hosted license servers still override via `.env`.
+
+---
+
 ## v1.4.70 — 2026-04-29
 
 ### Fixed
