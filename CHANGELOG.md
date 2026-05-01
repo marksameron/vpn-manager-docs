@@ -4,6 +4,18 @@ All notable changes to VPN Manager are documented here.
 
 ---
 
+## v1.4.92 — 2026-05-01
+
+### Changed
+
+- **License server stays dormant on un-activated FREE installs.** The instance heartbeat now skips its iteration when `LICENSE_KEY` is empty — no calls to the license server, no telemetry of any kind for boxes that never went through activation. Pairs with the existing online-validator behavior, so the entire license-server interaction surface is now strictly opt-in. The validator + heartbeat wake up automatically the moment an activation code is entered (via `install.sh` or Settings → License).
+
+### Why
+
+Previous behavior was "validator + heartbeat always run, but skip if no key". That still leaked a `LICENSE_KEY=""`-flagged heartbeat on every interval. Now the heartbeat doesn't fire at all unless there's a key to send. FREE-tier installs are now genuinely silent.
+
+---
+
 ## v1.4.91 — 2026-05-01
 
 ### Added
