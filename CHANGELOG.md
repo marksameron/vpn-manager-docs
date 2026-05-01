@@ -4,6 +4,15 @@ All notable changes to VPN Manager are documented here.
 
 ---
 
+## v1.4.95 — 2026-05-01
+
+### Fixed
+
+- **Heartbeat / license validator / auto-update-check loops now actually log to journalctl.** They were all running correctly under the hood, but their startup banners and runtime messages were silently dropped because the `logging` → `loguru` bridge gets overridden by uvicorn after API startup. Switched these modules to use `loguru` directly. You'll now see lines like `Auto update-check started (interval=21600s)`, `Instance heartbeat started (interval: 300s)`, and `Online license check via https://flirexa.biz: status=ok tier=enterprise` in `journalctl -u vpnmanager-api`.
+- **Reduced log noise.** "Loaded cached license status: ok" was emitting at INFO level on every status-collector tick (every panel poll). Demoted to DEBUG.
+
+---
+
 ## v1.4.92 — 2026-05-01
 
 ### Changed
