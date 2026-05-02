@@ -4,6 +4,26 @@ All notable changes to VPN Manager are documented here.
 
 ---
 
+## v1.5.4 — 2026-05-02
+
+A short follow-up bundling Herbert-driven UX requests and one update-bookkeeping fix.
+
+### Added
+
+- **Logout button in the user menu.** Top-right user-circle icon opens a menu with a clear Logout action that clears tokens and returns you to `/login`. Localized in 5 languages.
+- **Calendar date picker for client expiry.** The Clients form now lets you pick an exact expiry date alongside the existing day-count buttons (7 / 30 / 90). Useful when you need to align expiry with a specific calendar date.
+- **IPv4-only toggle per VPN server.** New checkbox in the server create form: when enabled, generated client configs strip the IPv6 `Address` line. Useful where IPv6 isn't fully tunneled and could leak DNS, or where the upstream provider doesn't route IPv6.
+
+### Fixed
+
+- **Mobile: AmneziaWG client config no longer overlaps two QR codes.** On narrow screens the WireGuard QR and the AmneziaVPN share-link QR now stack instead of squeezing into the same row.
+- **Landing page mobile overflow.** The hero section's grid items lacked `min-width:0`, so the `nowrap` install command inside expanded the column past the viewport on small phones, pushing the hero off-screen until the "Why us" section. Fixed by setting `min-width:0` on grid/flex children that contain potentially long unbreakable text.
+- **No more spurious "business_mutation blocked in update_in_progress" errors.** If an earlier update transitioned to `ROLLBACK_REQUIRED` because the post-update health check timed out, and a later update then succeeded, the system was leaving the old `ROLLBACK_REQUIRED` flag behind. The operational-mode middleware kept treating the box as "update in progress" and 423-blocked every write — including creating new clients. The reconcile pass now auto-clears stale `ROLLBACK_REQUIRED` rows once a later `SUCCESS` row exists for the same instance.
+- **Update badge now flashes promptly without manual "Check for updates".** `_CACHE_TTL` reduced from 1 hour to 60 seconds so the navbar's per-minute poll actually picks up newly published manifests.
+- **Top-level `navbar.logout` translation key.** Was previously only defined inside `cp.nav.logout` (client portal namespace), so the admin Navbar showed the literal `navbar.logout` string. Added in en/ru/es/fr/de.
+
+---
+
 ## v1.5.0 — 2026-05-01
 
 A UX milestone bundling everything from 1.4.96 → 1.5.0 stable:
